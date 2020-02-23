@@ -47,7 +47,7 @@ var radialPathData = radialLineGenerator(points);
 svg.append("path")
   .attr("class", "line")
   .attr("d", pathData)
-  .attr("fill", "none")
+  .attr("fill", "blue")
   .attr("stroke", "blue");
 
 
@@ -57,6 +57,18 @@ svg.append("path")
   .attr("transform", "translate(190, 100)")
   .attr("fill", "orange")
   .attr("stroke", "red");
+
+d3.selectAll("path.line")
+  .transition()
+  .duration(3000)
+  .attrTween("fill", function() {
+    return d3.interpolateRgb("blue", "#33DAFF");
+  })
+  .transition()
+  .duration(3000)
+  .attrTween("fill", function() {
+    return d3.interpolateRgb("#33DAFF", "blue");
+  });
 
 d3.selectAll("path.blob")
   .transition()

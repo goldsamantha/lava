@@ -30,7 +30,7 @@ var getPointsForBlob = function() {
     .fill()
     .map(function(item, index) {
       var minRad = 40;
-      var maxRad = 100
+      var maxRad = 200
       return [
         Math.PI * 2 / numPoints * index,
         Math.floor(Math.random() * (maxRad - minRad) + minRad)
@@ -45,40 +45,56 @@ console.log(points)
 var radialPathData = radialLineGenerator(points);
 
 svg.append("path")
-  .attr("class", "line")
-  .attr("d", pathData)
-  .attr("fill", "blue")
-  .attr("stroke", "blue");
-
-
-svg.append("path")
   .attr("class", "blob")
   .attr("d", radialPathData)
-  .attr("transform", "translate(190, 100)")
+  .attr("transform", "translate(290, 200)")
   .attr("fill", "orange")
   .attr("stroke", "red");
 
-d3.selectAll("path.line")
-  .transition()
-  .duration(3000)
-  .attrTween("fill", function() {
-    return d3.interpolateRgb("blue", "#33DAFF");
-  })
-  .transition()
-  .duration(3000)
-  .attrTween("fill", function() {
-    return d3.interpolateRgb("#33DAFF", "blue");
-  });
+var numPoints = 8;
+var pathsArray = Array(numPoints)
+    .fill()
+    .map(function(item, index) {
+      var pts = getPointsForBlob();
+      return radialLineGenerator(pts);
+});
 
+// TODO: clean up these transitions so they're in a transition
+// factory of some sort
 d3.selectAll("path.blob")
   .transition()
-  .duration(3000)
+  .duration(749)
+  .attrTween("d", function(d) {
+    var currPath = d3.selectAll("path.blob").attr("d");
+    return d3.interpolate(currPath, pathsArray[0]);
+  })
   .attrTween("fill", function() {
     return d3.interpolateRgb("#FF5733", "#FFD133");
   })
   .transition()
-  .duration(3000)
+  .duration(749)
+  .attrTween("d", function(d) {
+    var currPath = d3.selectAll("path.blob").attr("d");
+    return d3.interpolate(currPath, pathsArray[1]);
+  })
   .attrTween("fill", function() {
     return d3.interpolateRgb("#FFD133", "#FF5733");
-  });
-
+  })
+  .transition()
+  .duration(749)
+  .attrTween("d", function(d) {
+    var currPath = d3.selectAll("path.blob").attr("d");
+    return d3.interpolate(currPath, pathsArray[2]);
+  })
+  .transition()
+  .duration(749)
+  .attrTween("d", function(d) {
+    var currPath = d3.selectAll("path.blob").attr("d");
+    return d3.interpolate(currPath, pathsArray[3]);
+  })
+  .transition()
+  .duration(749)
+  .attrTween("d", function(d) {
+    var currPath = d3.selectAll("path.blob").attr("d");
+    return d3.interpolate(currPath, pathsArray[4]);
+});

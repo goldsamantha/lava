@@ -11,15 +11,6 @@ var randRange = function(min, max) {
 }
 
 var lineGenerator = d3.line().curve(d3.curveCardinal);
-var points = [[40, 60], [300, 200], [400, 60], [500, 80], [400, 190], [140, 200]];
-var points = [
-  [0, 80],
-  [100, 100],
-  [200, 30],
-  [300, 50],
-  [400, 40],
-  [500, 80]
-];
 
 var numPoints = 10;
 var points = Array(numPoints)
@@ -33,30 +24,21 @@ var points = Array(numPoints)
 var pathData = lineGenerator(points);
 
 var radialLineGenerator = d3.radialLine().curve(d3.curveBasisClosed);
+var getPointsForBlob = function() {
+  var numPoints = 8;
+  return Array(numPoints)
+    .fill()
+    .map(function(item, index) {
+      var minRad = 40;
+      var maxRad = 100
+      return [
+        Math.PI * 2 / numPoints * index,
+        Math.floor(Math.random() * (maxRad - minRad) + minRad)
+      ];
+  });
+}
 
-var points = [
-  [0, 80],
-  [Math.PI * 0.25, 80],
-  [Math.PI * 0.5, 30],
-  [Math.PI * 0.75, 80],
-  [Math.PI, 80],
-  [Math.PI * 1.25, 80],
-  [Math.PI * 1.5, 80],
-  [Math.PI * 1.75, 80],
-  [Math.PI * 2, 80]
-];
-var numPoints = 8;
-
-var points = Array(numPoints)
-  .fill()
-  .map(function(item, index) {
-    var minRad = 40;
-    var maxRad = 100
-    return [
-      Math.PI * 2 / numPoints * index,
-      Math.floor(Math.random() * (maxRad - minRad) + minRad)
-    ];
-});
+var points = getPointsForBlob();
 
 console.log(points)
 
@@ -70,8 +52,21 @@ svg.append("path")
 
 
 svg.append("path")
-  .attr("class", "line")
+  .attr("class", "blob")
   .attr("d", radialPathData)
   .attr("transform", "translate(190, 100)")
   .attr("fill", "orange")
   .attr("stroke", "red");
+
+d3.selectAll("path.blob")
+  .transition()
+  .duration(3000)
+  .attrTween("fill", function() {
+    return d3.interpolateRgb("#FF5733", "#FFD133");
+  })
+  .transition()
+  .duration(3000)
+  .attrTween("fill", function() {
+    return d3.interpolateRgb("#FFD133", "#FF5733");
+  });
+

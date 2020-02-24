@@ -1,10 +1,12 @@
 console.log('ahh');
 var width = 600;
 var height = 600;
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body svg")
   .attr("width", width)
   .attr("height", height);
 
+
+var DURATION = 4000;
 
 var randRange = function(min, max) {
   return Math.floor(Math.random() * (max - min) + min)
@@ -25,15 +27,15 @@ var pathData = lineGenerator(points);
 
 var radialLineGenerator = d3.radialLine().curve(d3.curveBasisClosed);
 var getPointsForBlob = function() {
-  var numPoints = 8;
+  var numPoints = 6;
   return Array(numPoints)
     .fill()
     .map(function(item, index) {
-      var minRad = 40;
-      var maxRad = 200
+      var minRad = 100;
+      var maxRad = 300
       return [
-        Math.PI * 2 / numPoints * index,
-        Math.floor(Math.random() * (maxRad - minRad) + minRad)
+        (Math.PI * 2 + Math.random()) / numPoints * index, // arc
+        Math.floor(Math.random() * (maxRad - minRad) + minRad) // radius
       ];
   });
 }
@@ -47,11 +49,9 @@ var radialPathData = radialLineGenerator(points);
 svg.append("path")
   .attr("class", "blob")
   .attr("d", radialPathData)
-  .attr("transform", "translate(290, 200)")
-  .attr("fill", "orange")
-  .attr("stroke", "red");
+  .attr("transform", `translate(${width/2}, ${height/2})`);
 
-var numPoints = 8;
+var numPaths = 8;
 var pathsArray = Array(numPoints)
     .fill()
     .map(function(item, index) {
@@ -63,37 +63,32 @@ var pathsArray = Array(numPoints)
 // factory of some sort
 d3.selectAll("path.blob")
   .transition()
-  .duration(749)
+  .duration(DURATION)
+  .ease(d3.easeCubicInOut)
   .attrTween("d", function(d) {
     var currPath = d3.selectAll("path.blob").attr("d");
     return d3.interpolate(currPath, pathsArray[0]);
   })
-  .attrTween("fill", function() {
-    return d3.interpolateRgb("#FF5733", "#FFD133");
-  })
   .transition()
-  .duration(749)
+  .duration(DURATION)
   .attrTween("d", function(d) {
     var currPath = d3.selectAll("path.blob").attr("d");
     return d3.interpolate(currPath, pathsArray[1]);
   })
-  .attrTween("fill", function() {
-    return d3.interpolateRgb("#FFD133", "#FF5733");
-  })
   .transition()
-  .duration(749)
+  .duration(DURATION)
   .attrTween("d", function(d) {
     var currPath = d3.selectAll("path.blob").attr("d");
     return d3.interpolate(currPath, pathsArray[2]);
   })
   .transition()
-  .duration(749)
+  .duration(DURATION)
   .attrTween("d", function(d) {
     var currPath = d3.selectAll("path.blob").attr("d");
     return d3.interpolate(currPath, pathsArray[3]);
   })
   .transition()
-  .duration(749)
+  .duration(DURATION)
   .attrTween("d", function(d) {
     var currPath = d3.selectAll("path.blob").attr("d");
     return d3.interpolate(currPath, pathsArray[4]);
